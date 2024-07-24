@@ -29,49 +29,50 @@ class _SelectCityState extends ConsumerState<SelectCity> {
         children: [
           Column(
             children: [
-              TextField(
-                onChanged: (value) {
-                  if (value.isEmpty) {
-                    ref.read(isSearchProvider.notifier).update((state) => false);
-                  }
-                },
-                keyboardType: TextInputType.text,
-                cursorColor: CustomColors.primaryGreen,
-                minLines: 1,
-                controller: _cityController,
-                onSubmitted: (value) async {
-                  ref.read(isLoadingProvider.notifier).update((state) => true);
-                  final cityController = ref.read(cityControllerProvider);
-                  cities = await cityController.searchCities(value);
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                child: TextField(
+                  onChanged: (value) {
+                    if (value.isEmpty) {
+                      ref.read(isSearchProvider.notifier).update((state) => false);
+                    }
+                  },
+                  keyboardType: TextInputType.text,
+                  cursorColor: CustomColors.primaryGreen,
+                  minLines: 1,
+                  controller: _cityController,
+                  onSubmitted: (value) async {
+                    ref.read(isLoadingProvider.notifier).update((state) => true);
+                    final cityController = ref.read(cityControllerProvider);
+                    cities = await cityController.searchCities(value);
 
-                  if (cities == null) {
-                    ref.read(searchCityResultProvider.notifier).update((state) => 'Api has reched its limit');
-                  }
-
-                  else if (cities!.isNotEmpty) {
-                    ref.read(isSearchProvider.notifier).update((state) => true);
-                  }
-                  ref.read(isLoadingProvider.notifier).update((state) => false);
-                },
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.search),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                  hintText: 'Search',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(26)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(26)),
-                    borderSide: BorderSide(
-                      color: Colors.grey,
-                      width: 1.4,
+                    if (cities == null) {
+                      ref.read(searchCityResultProvider.notifier).update((state) => 'Api has reched its limit');
+                    } else if (cities!.isNotEmpty) {
+                      ref.read(isSearchProvider.notifier).update((state) => true);
+                    }
+                    ref.read(isLoadingProvider.notifier).update((state) => false);
+                  },
+                  decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.search),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                    hintText: 'Search',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(26)),
                     ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(26)),
-                    borderSide: BorderSide(
-                      color: Colors.grey,
-                      width: 1,
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(26)),
+                      borderSide: BorderSide(
+                        color: Colors.grey,
+                        width: 1.4,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(26)),
+                      borderSide: BorderSide(
+                        color: Colors.grey,
+                        width: 1,
+                      ),
                     ),
                   ),
                 ),
