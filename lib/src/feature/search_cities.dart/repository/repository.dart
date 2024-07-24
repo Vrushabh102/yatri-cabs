@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:html';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:yatri_cabs/src/core/api.dart';
@@ -21,6 +20,7 @@ class CityRepository {
       query,
       headers: {
         'content-type': 'application/vnd.amadeus+json',
+        'acess_token' : ''
       },
       
     );

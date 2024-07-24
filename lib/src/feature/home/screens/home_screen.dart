@@ -165,11 +165,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       child: ElevatedButton(
                         onPressed: () {
                           // goto search city...
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const SelectCity(),
-                              ));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const SelectCity(),));
                         },
                         style: primaryButtonStyle(),
                         child: const Text(
