@@ -20,5 +20,6 @@ class IconAssets {
   static const outsideTripIcon = 'assets/icons/outsize_trip.png';
   static const timeIcon = 'assets/icons/time.png';
   static const localTripIcon = 'assets/icons/localtrip.png';
-
+  static const unselectedIcon = 'assets/icons/unselected_outstation_trip.png';
+  static const dateRoundTripIcon = 'assets/icons/date_round_trip.png';
 }

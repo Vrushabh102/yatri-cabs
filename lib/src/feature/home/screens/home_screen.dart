@@ -1,12 +1,12 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yatri_cabs/src/common/style/primary_button_style.dart';
-import 'package:yatri_cabs/src/common/widgets/expore_cabs_containers.dart';
 import 'package:yatri_cabs/src/common/widgets/home_containers.dart';
 import 'package:yatri_cabs/src/core/providers.dart';
-import 'package:yatri_cabs/src/feature/search_cities.dart/screen/select_city.dart';
+import 'package:yatri_cabs/src/feature/home/views/airport_transfer_trip_container.dart';
+import 'package:yatri_cabs/src/feature/home/views/local_trip_container.dart';
+import 'package:yatri_cabs/src/feature/home/views/out_station_trip_container.dart';
 import 'package:yatri_cabs/src/res/assets.dart';
 import 'package:yatri_cabs/src/utils/colors.dart';
 
@@ -20,6 +20,14 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    List<Widget> listOfTipContainers = [
+      const OutStationTrip(),
+      const LocalTripContainer(),
+      const AirportTripContainer(),
+    ];
+
+    final currTripCategory = ref.watch(tripCategoryIndexProvider);
+    final roundTrip = ref.watch(roundTripProvider);
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     log(height.toString());
@@ -61,28 +69,43 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 height: 10,
               ),
 
-              const Row(
+              Row(
                 children: [
-                  HomeTripContainer(
-                    imagePath: IconAssets.outsideTripIcon,
-                    title: 'Outstation Trip',
-                    color: CustomColors.primaryGreen,
-                    iconColor: Colors.white,
-                    textColor: Colors.white,
+                  InkWell(
+                    radius: 20,
+                    onTap: () {
+                      ref.read(tripCategoryIndexProvider.notifier).update((state) => 0);
+                    },
+                    child: HomeTripContainer(
+                      isOutsideStationTrip: true,
+                      imagePath: IconAssets.outsideTripIcon,
+                      title: 'Outstation Trip',
+                      isSelected: currTripCategory == 0,
+                    ),
                   ),
-                  HomeTripContainer(
-                    imagePath: IconAssets.localTripIcon,
-                    title: 'Local Trip',
-                    color: Colors.white,
-                    iconColor: Colors.black,
-                    textColor: Colors.black,
+                  InkWell(
+                    radius: 20,
+                    onTap: () {
+                      ref.read(tripCategoryIndexProvider.notifier).update((state) => 1);
+                    },
+                    child: HomeTripContainer(
+                      isOutsideStationTrip: false,
+                      imagePath: IconAssets.localTripIcon,
+                      title: 'Local Trip',
+                      isSelected: currTripCategory == 1,
+                    ),
                   ),
-                  HomeTripContainer(
-                    imagePath: IconAssets.airportTripIcon,
-                    title: 'Local Trip',
-                    color: Colors.white,
-                    iconColor: Colors.black,
-                    textColor: Colors.black,
+                  InkWell(
+                    radius: 20,
+                    onTap: () {
+                      ref.read(tripCategoryIndexProvider.notifier).update((state) => 2);
+                    },
+                    child: HomeTripContainer(
+                      isOutsideStationTrip: false,
+                      imagePath: IconAssets.airportTripIcon,
+                      title: 'Airport Transfer',
+                      isSelected: currTripCategory == 2,
+                    ),
                   ),
                 ],
               ),
@@ -92,94 +115,50 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
 
               // two buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  SizedBox(
-                    height: 0.032 * height,
-                    width: 147,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: primaryButtonStyle(),
-                      child: const Text(
-                        'One-way',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 28,
-                    width: 147,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: const Text(
-                        'Round Trip',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              (currTripCategory == 0)
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        SizedBox(
+                          height: 0.032 * height,
+                          width: 147,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              ref.read(roundTripProvider.notifier).update((state) => 0);
+                            },
+                            style: primaryButtonStyle(roundTrip == 0),
+                            child: Text(
+                              'One-way',
+                              style: TextStyle(color: roundTrip == 0 ? Colors.white : Colors.black),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 28,
+                          width: 147,
+                          child: ElevatedButton(
+                            style: primaryButtonStyle(roundTrip == 1),
+                            onPressed: () {
+                              ref.read(roundTripProvider.notifier).update((state) => 1);
+                            },
+                            child: Text(
+                              'Round Trip',
+                              style: TextStyle(color: roundTrip == 1 ? Colors.white : Colors.black),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox(),
 
               const SizedBox(
                 height: 10,
               ),
 
-              // explore cabs container
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.white,
-                ),
-                child: Column(
-                  children: [
-                    const ExploreCabsContainer(
-                      leadingIconPath: IconAssets.locationIcon,
-                      title: 'Pick-up City',
-                      subtitle: 'Type City Name',
-                      showClose: true,
-                    ),
-                    const ExploreCabsContainer(
-                      leadingIconPath: IconAssets.flagIcon,
-                      title: 'Drop City',
-                      subtitle: 'Type City Name',
-                      showClose: true,
-                    ),
-                    const ExploreCabsContainer(
-                      leadingIconPath: IconAssets.dateIcon,
-                      title: 'Pick-up City',
-                      subtitle: 'Type City Name',
-                      showClose: false,
-                    ),
-                    const ExploreCabsContainer(
-                      leadingIconPath: IconAssets.timeIcon,
-                      title: 'Pick-up Date',
-                      subtitle: 'DD-MM-YYYY',
-                      showClose: false,
-                    ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(vertical: 10),
-                      height: 50,
-                      width: 200,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // goto search city...
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const SelectCity(),));
-                        },
-                        style: primaryButtonStyle(),
-                        child: const Text(
-                          'Explore Cabs',
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
+              // enter city,date details container
+              listOfTipContainers[ref.watch(tripCategoryIndexProvider)],
 
               const SizedBox(height: 10),
-
               // illustration
               Container(
                 decoration: BoxDecoration(

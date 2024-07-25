@@ -3,11 +3,12 @@ import 'package:yatri_cabs/src/res/assets.dart';
 import 'package:yatri_cabs/src/utils/colors.dart';
 
 class ExploreCabsContainer extends StatelessWidget {
-  const ExploreCabsContainer({super.key, required this.title, required this.subtitle, required this.leadingIconPath, required this.showClose});
+  const ExploreCabsContainer({super.key, required this.title, required this.subtitle, required this.leadingIconPath, required this.showClose, required this.onClear});
   final String title;
   final String subtitle;
   final String leadingIconPath;
   final bool showClose;
+  final Function onClear;
 
   @override
   Widget build(BuildContext context) {
@@ -18,25 +19,31 @@ class ExploreCabsContainer extends StatelessWidget {
         color: CustomColors.exploreCabsContainer,
       ),
       child: ListTile(
-          title: Text(
-            title,
-            style: const TextStyle(color: CustomColors.primaryGreen, fontSize: 12),
-          ),
-          leading: Image.asset(
-            leadingIconPath,
-            height: 31,
-            width: 31,
-          ),
-          subtitle: Text(
-            subtitle,
-            style: const TextStyle(fontSize: 12),
-          ),
-          trailing: (showClose)
-              ? Image.asset(IconAssets.closeIcon)
-              : const SizedBox(
-                  height: 0,
-                  width: 0,
-                )),
+        title: Text(
+          title,
+          style: const TextStyle(color: CustomColors.primaryGreen, fontSize: 12),
+        ),
+        leading: Image.asset(
+          leadingIconPath,
+          height: 31,
+          width: 31,
+        ),
+        subtitle: Text(
+          subtitle,
+          style: const TextStyle(fontSize: 12),
+        ),
+        trailing: (showClose)
+            ? InkWell(
+                onTap: () {
+                  onClear();
+                },
+                child: Image.asset(IconAssets.closeIcon),
+              )
+            : const SizedBox(
+                height: 0,
+                width: 0,
+              ),
+      ),
     );
   }
 }
